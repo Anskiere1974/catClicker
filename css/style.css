@@ -39,20 +39,23 @@ h1 {
 	flex-flow: row wrap;
 }
 
-.cat-image {
+.grid {
 	width: 50%;
+	padding: 8px;
 }
 
-.cat-counter-wrapper {
-	width: 50%;
-	padding: 0 16px;
-}
-
-.cat-counter {
+#counterCat1 {
 	background-color: #1b85b8;
-	text-align: center;
+	line-height: 200px;
+	text-align: center;	
 	color: #fff;
-	line-height: 400px;
-	font-size: 140px;	
-	border-radius: 20px;
+	font-size: 100px;
+}
+
+#counterCat2 {
+	background-color: #c3cb71;
+	line-height: 200px;
+	text-align: center;	
+	color: #fff;
+	font-size: 100px;
 }
