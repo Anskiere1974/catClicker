@@ -43,19 +43,3 @@ h1 {
 	width: 50%;
 	padding: 8px;
 }
-
-#counterCat1 {
-	background-color: #1b85b8;
-	line-height: 200px;
-	text-align: center;	
-	color: #fff;
-	font-size: 100px;
-}
-
-#counterCat2 {
-	background-color: #c3cb71;
-	line-height: 200px;
-	text-align: center;	
-	color: #fff;
-	font-size: 100px;
-}
