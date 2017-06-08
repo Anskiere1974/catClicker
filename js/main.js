@@ -1,3 +1,131 @@
+// ******************************************************************
+// ****                 MODEL                                     ***
+// ******************************************************************
+var model = {
+	cats: [
+{
+	name: "Oliver",
+	counter: 0,
+	source: "images/cat1.jpg"
+},
+{
+	name: "Simba",
+	counter: 0,
+	source: "images/cat2.jpg"
+},{
+	name: "Nala",
+	counter: 0,
+	source: "images/cat3.jpg"
+},
+{
+	name: "Tigger",
+	counter: 0,
+	source: "images/cat4.jpg"
+},
+{
+	name: "Gideon",
+	counter: 0,
+	source: "images/cat5.jpg"
+}],
+	currentCat: null
+};
+
+// ******************************************************************
+// ****                 OCTOPUS                                   ***
+// ******************************************************************
+var octopus = {
+	init: function() {
+		// set the current cat to the first cat in the list
+		model.currentCat = model.cats[0];
+		// initializing catListView
+		catListView.init();
+		// initializing catView
+		catView.init();
+	},
+	getAllCats: function() {
+		return model.cats;
+	},
+	getCurrentCat: function() {
+		return model.currentCat;
+	},
+	setCurrentCat: function(cat) {
+		model.currentCat = cat;
+	},
+	increaseCounter: function(){
+		model.currentCat.counter++;
+		catView.render();
+	}
+};
+
+// ******************************************************************
+// ****                 catListView                               ***
+// ******************************************************************
+var catListView = {
+	init: function() {
+		// storing the ul element with id of cat-list
+		this.elemCatList = document.getElementById('cat-list');
+		// initializing the render function
+		this.render();
+	},
+	render: function() {
+		// First we need all the Cats - we use the octopus to get them from the model
+		var cats = octopus.getAllCats();
+		// Now we loop over all the cats
+		for (var i = 0; i < cats.length; i++) {
+			// this is our current cat
+			var cat = cats[i];
+			// create a new list item
+			var listItem = document.createElement("li");
+			// create a new text node
+			var t = document.createTextNode(cat.name); 
+			// append text node to list-item
+			listItem.appendChild(t);
+            // on click, setCurrentCat and render the catView
+            // (this uses our closure-in-a-loop trick to connect the value
+            //  of the cat variable to the click event function)
+            listItem.addEventListener('click', (function(catCopy) {
+                return function() {
+                    octopus.setCurrentCat(catCopy);
+                    catView.render();
+                };
+            })(cat));
+			// append new list-item to corresponding ui Dom element
+			this.elemCatList.appendChild(listItem);
+		}
+	},
+};
+
+// ******************************************************************
+// ****                 catView                                   ***
+// ******************************************************************
+var catView = {
+	init: function() {
+		// let's store the DOM Element of the cat picture
+		this.elemCatPic = document.getElementById('catpic');
+		// Let's store the DOM Element of the cat message
+		this.elemCatMessage = document.getElementById('catmessage');
+
+		// listen for clicks on the current cat image
+		this.elemCatPic.addEventListener('click', function(){
+			octopus.increaseCounter();
+		});
+
+		// initialize the render method
+		this.render();
+	},
+	render: function() {
+		// Let's find the current Cat
+		var currentCat = octopus.getCurrentCat();
+		// set the img source accordingly
+		this.elemCatPic.src = currentCat.source;
+
+		this.elemCatMessage.textContent = "Hi my name is " + currentCat.name + ". You have clicked me " + currentCat.counter + " times";
+	}
+};
+// Let's start the show
+octopus.init();
+
+/*
 var cats = [
 {
 	name: "Oliver",
@@ -49,37 +177,5 @@ for (var i = 0; i < cats.length; i++) {
 	var elem = document.getElementById("cat-list");
 	elem.appendChild(listItem);
 }
-
-
-/*
-// Name of Cat One
-var catOneName = "Schnurri";
-var catTwoName = "Knurri";
-
-// Display name of cat one
-var elem1 = document.getElementById('cat1-name');
-elem1.innerHTML = catOneName;
-// Display name of cat two
-var elem2 = document.getElementById('cat2-name');
-elem2.innerHTML = catTwoName;
-
-// defining the counters for each cat
-var catOneCounter = 0;
-var catTwoCounter = 0;
-
-// Listening for click on first cat
-var elem3 = document.getElementById('catpic1');
-var elem4 = document.getElementById('counterCat1');
-elem3.addEventListener('click', function(){
-	catOneCounter++;
-	elem4.innerHTML = catOneCounter;
-});
-
-// Listening for click on second cat
-var elem5 = document.getElementById('catpic2');
-var elem6 = document.getElementById('counterCat2');
-elem5.addEventListener('click', function(){
-	catTwoCounter++;
-	elem6.innerHTML = catTwoCounter;
-});
 */
+
