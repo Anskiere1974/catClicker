@@ -27,7 +27,8 @@ var model = {
 	counter: 0,
 	source: "images/cat5.jpg"
 }],
-	currentCat: null
+	currentCat: null,
+	adminPanel: false
 };
 
 // ******************************************************************
@@ -54,6 +55,33 @@ var octopus = {
 	increaseCounter: function(){
 		model.currentCat.counter++;
 		catView.render();
+	},
+	setAdminPanelTrue: function() {
+		model.adminPanel = true;
+	},
+	setAdminPanelFalse: function() {
+		model.adminPanel = false;
+	},
+	getAdminPanel: function() {
+		return model.adminPanel;
+	},
+	getCurrenCatName: function() {
+		return model.currentCat.name;
+	},
+	getCurrentCatClicks: function() {
+		return model.currentCat.counter;
+	},
+	getCurrentCatSource: function() {
+		return model.currentCat.source;
+	},
+	setCurrentCatName: function(cat) {
+		model.currentCat.name = cat;
+	},
+	setCurrentCatClicks: function(clicks) {
+		model.currentCat.counter = clicks;
+	},
+	setCurrentCatSource: function(source) {
+		model.currentCat.source = source;
 	}
 };
 
@@ -64,12 +92,21 @@ var catListView = {
 	init: function() {
 		// storing the ul element with id of cat-list
 		this.elemCatList = document.getElementById('cat-list');
+
+		// Listen for clicks on adminpanelbutton
+		this.elemAdminPanelButton = document.getElementById('admin-panel-button');
+		this.elemAdminPanelButton.addEventListener('click', function(){
+			octopus.setAdminPanelTrue();
+			adminView.init();
+		});
 		// initializing the render function
 		this.render();
 	},
 	render: function() {
 		// First we need all the Cats - we use the octopus to get them from the model
 		var cats = octopus.getAllCats();
+		// first we need to clear the ul list, making sure our list is empty
+		this.elemCatList.innerHTML = "";
 		// Now we loop over all the cats
 		for (var i = 0; i < cats.length; i++) {
 			// this is our current cat
@@ -87,6 +124,7 @@ var catListView = {
                 return function() {
                     octopus.setCurrentCat(catCopy);
                     catView.render();
+                    adminView.render();
                 };
             })(cat));
 			// append new list-item to corresponding ui Dom element
@@ -108,6 +146,9 @@ var catView = {
 		// listen for clicks on the current cat image
 		this.elemCatPic.addEventListener('click', function(){
 			octopus.increaseCounter();
+			if(octopus.getAdminPanel){
+				adminView.render();
+			}
 		});
 
 		// initialize the render method
@@ -122,60 +163,55 @@ var catView = {
 		this.elemCatMessage.textContent = "Hi my name is " + currentCat.name + ". You have clicked me " + currentCat.counter + " times";
 	}
 };
+
+// ******************************************************************
+// ****                 adminView                                ***
+// ******************************************************************
+var adminView = {
+	init: function() {
+		this.elemAdminPanel = document.getElementById('adminPanel');
+		this.htmlAdminPanel = '<h3>Welcome to the Admin Panel</h3><form><label for="catname">Name:</label><input type="text" id="catname"><br><label for="catclicks">Number of clicks:</label><input type="text" id="catclicks"><br><label for="catsource">Img Source:</label><input type="text" id="catsource"></form><button id="btnclose">Close</button><button id="btnsave">Save</button>';
+		// start the render function
+		this.render();
+		// listen for clicks on btnclose
+		if(octopus.getAdminPanel) {
+			var elemBtnClose = document.getElementById('btnclose');
+			elemBtnClose.addEventListener('click', function() {
+				octopus.setAdminPanelFalse();
+				adminView.render();
+			});
+		}
+	},
+	render: function() {
+		if(octopus.getAdminPanel()) {
+			this.elemAdminPanel.innerHTML = this.htmlAdminPanel;
+			// Fill in the current cat name as value in form
+			var elemCatName = document.getElementById('catname');
+			elemCatName.value = octopus.getCurrenCatName();
+			// Fill in the click counter as value in form
+			var elemCatClicks = document.getElementById('catclicks');
+			elemCatClicks.value = octopus.getCurrentCatClicks();
+			// Fill in the img source as value in form
+			var elemCatSource = document.getElementById('catsource');
+			elemCatSource.value = octopus.getCurrentCatSource();
+
+			// Now listen for a click on the save button
+			var elemBtnSave = document.getElementById('btnsave');
+			elemBtnSave.addEventListener('click', function(){
+				// saving values from the form to the model via the octopus
+				octopus.setCurrentCatName(elemCatName.value);
+				octopus.setCurrentCatClicks(elemCatClicks.value);
+				octopus.setCurrentCatSource(elemCatSource.value);
+				// Now update the views
+				catListView.render();
+				catView.render();
+			});
+		} else {
+			this.elemAdminPanel.innerHTML = "";
+		}
+	}
+};
+
 // Let's start the show
 octopus.init();
-
-/*
-var cats = [
-{
-	name: "Oliver",
-	counter: 0,
-	source: "cat1.jpg"
-},
-{
-	name: "Simba",
-	counter: 0,
-	source: "cat2.jpg"
-},{
-	name: "Nala",
-	counter: 0,
-	source: "cat3.jpg"
-},
-{
-	name: "Tigger",
-	counter: 0,
-	source: "cat4.jpg"
-},
-{
-	name: "Gideon",
-	counter: 0,
-	source: "cat5.jpg"
-}];
-
-// Looping over the cats
-for (var i = 0; i < cats.length; i++) {
-	// this is our current cat
-	var cat = cats[i];
-	// create a new list item
-	var listItem = document.createElement("li");
-	// create a new text node
-	var t = document.createTextNode(cat.name); 
-	// append text node to list-item
-	listItem.appendChild(t);
-	// listen for clicks on each cat
-    listItem.addEventListener('click', (function(catCopy) {
-        return function() {
-        	catCopy.counter++;
-        	// change the image of the cat on click
-        	document.getElementById("catpic").src = "images/" + catCopy.source;
-            // Write out the cat's name and counter to the message
-            var elem2 = document.getElementById('message');
-            elem2.innerHTML = "Hi my name is " + catCopy.name + ". You have clicked me " + catCopy.counter + " times";
-        };
-    })(cat));
-	// append list-item to ul
-	var elem = document.getElementById("cat-list");
-	elem.appendChild(listItem);
-}
-*/
 
