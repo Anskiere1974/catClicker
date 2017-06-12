@@ -35,3 +35,7 @@ Contains all features from v1.3 plus an admin panel. The admin panel allows you 
 __v2.0 Cat Clicker Premium Knockout.js with single Cat__
 
 This  version is a complete rebuild of Cat Clicker Premium with Knockouts.js. You learn about MVVM(Model-View-ViewModel), ko.observables, ko.observableArray, ko.computed and a lot about data binding(text, click, foreach, with …). This version has only one cat, who is imported through a constructor function.
+
+__v2.1 Cat Clicker Premium Knockout.js with multiple Cats__
+
+Contains all features from v2.0 plus multiple cats. You have the same features as in v1.3 Cat Clicker Premium. But instead of using our own MVO, we do everything with Knockout.js. In this example you will see many of the core features of Knockout.js.
