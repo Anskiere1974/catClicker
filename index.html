@@ -1,33 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<!-- Setting the viewport -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- Google Fonts on the way -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-	<!-- Link to Style Sheet -->
-	<link rel="stylesheet" href="css/style.css">
-	<title>Cat Clicker</title>
+    <meta charset="UTF-8">
+    <title>Cat Clicker</title>
 </head>
 <body>
-	<div class="container">
-		<h1>Cat Clicker</h1>
-		<div id="cat-wrapper">
-			<div class="grid">
-			<h3>Featured Cats</h3>
-			<ul id="cat-list">
-			</ul>
-			<a href="#" class="button" id="admin-panel-button">Admin Panel</a>
-		</div>
-		<div class="grid">
-			<img src="" alt="cute cat" class="img-responsive" id="catpic">
-			<p id="catmessage"></p>
-		</div>
-	</div>
-		<div id="adminPanel">
-		</div>
-	</div>
-	<script src="js/main.js"></script>
+    
+    <div data-bind="with: currentCat()">
+
+        <h2 data-bind="text: name"></h2>
+        <div data-bind="text: rank"></div>
+        <div data-bind="text: counter"></div>
+        <img src="" alt="cute cat" data-bind="click: $parent.incrementCounter, attr: {src: source}">
+        <h3>Nicknames</h3>
+        <!-- rendering dynamic lists is easy as pie using the foreach data-bind -->
+        <ul data-bind="foreach: nicknames">
+            <li data-bind="text: $data"></li>
+        </ul>
+
+    </div>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
